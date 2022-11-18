@@ -22,6 +22,28 @@ class _HomeState extends State<Home> {
               icon: const Icon(Icons.logout))
         ],
         title: const Text('Home'),
+        body: Center(
+            child: ElevatedButton(
+                onPressed: () => {
+                      () async {
+                        try {
+                          final image = await ImagePicker()
+                              .pickVideo(source: ImageSource.gallery);
+                          if (image == null) return;
+                          final imageTemp = File(image.path);
+                          print(imageTemp);
+                        } on PlatformException catch (e) {
+                          print('Failed to pick video: $e');
+                        }
+                      }
+                    },
+                style: ButtonStyle(
+                    minimumSize: MaterialStateProperty.all(const Size(400, 50)),
+                    backgroundColor: MaterialStateProperty.all(
+                        const Color.fromARGB(255, 146, 68, 130)),
+                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)))),
+                child: const Text('Pick a Video'))));
       ),
     );
   }
