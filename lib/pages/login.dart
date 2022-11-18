@@ -1,3 +1,6 @@
+import 'package:droame/pages/home.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class Login extends StatefulWidget {
@@ -7,6 +10,8 @@ class Login extends StatefulWidget {
 }
 
 class _LoginFormState extends State<Login> {
+  String email = "";
+  String password = "";
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -19,7 +24,6 @@ class _LoginFormState extends State<Login> {
         backgroundColor: Colors.transparent,
         body: Stack(
           children: [
-            Container(),
             Container(
               padding: const EdgeInsets.only(left: 35, top: 130),
               child: const Text(
@@ -66,6 +70,7 @@ class _LoginFormState extends State<Login> {
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 )),
+                                onChanged: (value)=> email = value,
                           ),
                           const SizedBox(
                             height: 30,
@@ -80,13 +85,26 @@ class _LoginFormState extends State<Login> {
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 )),
+                                onChanged: (value)=> password = value
                           ),
                           const SizedBox(
                             height: 40,
                           ),
                           ElevatedButton(
-                              onPressed: () => {},
-                              child: const Text('Login'),
+                              onPressed: () => {
+                                    FirebaseAuth.instanceFor(
+                                            app: Firebase.app("my app"))
+                                        .signInWithEmailAndPassword(
+                                            email: email, password: password)
+                                        .then((value) =>
+                                            Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const Home())))
+                                        .onError((error, stackTrace) =>
+                                            print("Error ${error}"))
+                              },
                               style: ButtonStyle(
                                   minimumSize: MaterialStateProperty.all(
                                       const Size(400, 50)),
@@ -95,7 +113,8 @@ class _LoginFormState extends State<Login> {
                                   shape: MaterialStateProperty.all(
                                       RoundedRectangleBorder(
                                           borderRadius:
-                                              BorderRadius.circular(10))))),
+                                              BorderRadius.circular(10)))),
+                              child: const Text('Login')),
                           const SizedBox(
                             height: 40,
                           ),

@@ -1,3 +1,6 @@
+import 'package:droame/pages/home.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class Register extends StatefulWidget {
@@ -7,6 +10,8 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterFormState extends State<Register> {
+  String email = "";
+  String password = "";
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -37,15 +42,16 @@ class _RegisterFormState extends State<Register> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                      Container(
-                      margin: const EdgeInsets.only(left: 35, right: 35,bottom: 30),
-                      child:const Center(child: Text(
+                    Container(
+                      margin: const EdgeInsets.only(
+                          left: 35, right: 35, bottom: 30),
+                      child: const Center(
+                          child: Text(
                         "Sign in with Phone instead",
                         style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                          decoration: TextDecoration.underline
-                        ),
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            decoration: TextDecoration.underline),
                       )),
                     ),
                     Container(
@@ -53,38 +59,53 @@ class _RegisterFormState extends State<Register> {
                       child: Column(
                         children: [
                           TextField(
-                            style: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
-                            decoration: InputDecoration(
-                                fillColor: Colors.grey.shade100,
-                                filled: true,
-                                hintText: "Email",
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                )),
-                          ),
+                              style: const TextStyle(
+                                  color: Color.fromARGB(255, 0, 0, 0)),
+                              decoration: InputDecoration(
+                                  fillColor: Colors.grey.shade100,
+                                  filled: true,
+                                  hintText: "Email",
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  )),
+                              onChanged: (value) => email = value),
                           const SizedBox(
                             height: 30,
                           ),
                           TextField(
-                            style: const TextStyle(),
-                            obscureText: true,
-                            decoration: InputDecoration(
-                                fillColor: Colors.grey.shade100,
-                                filled: true,
-                                hintText: "Password",
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                )),
-                          ),
+                              style: const TextStyle(),
+                              obscureText: true,
+                              decoration: InputDecoration(
+                                  fillColor: Colors.grey.shade100,
+                                  filled: true,
+                                  hintText: "Password",
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  )),
+                              onChanged: (value) => password = value),
                           const SizedBox(
                             height: 40,
                           ),
                           ElevatedButton(
-                              onPressed: () => {},
+                              onPressed: () => {
+                                    FirebaseAuth.instanceFor(
+                                            app: Firebase.app("my app"))
+                                        .createUserWithEmailAndPassword(
+                                            email: email, password: password)
+                                        .then((value) =>
+                                            Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const Home())))
+                                        .onError((error, stackTrace) =>
+                                            print("Error ${error}"))
+                                  },
                               style: ButtonStyle(
-                                  minimumSize: MaterialStateProperty.all(const Size(400, 50)),
-                                  backgroundColor:
-                                      MaterialStateProperty.all(const Color.fromARGB(255, 146, 68, 130)),
+                                  minimumSize: MaterialStateProperty.all(
+                                      const Size(400, 50)),
+                                  backgroundColor: MaterialStateProperty.all(
+                                      const Color.fromARGB(255, 146, 68, 130)),
                                   shape: MaterialStateProperty.all(
                                       RoundedRectangleBorder(
                                           borderRadius:
@@ -112,7 +133,7 @@ class _RegisterFormState extends State<Register> {
                               ),
                               TextButton(
                                   onPressed: () {
-                                     Navigator.pushNamed(context, '/forgot');
+                                    Navigator.pushNamed(context, '/forgot');
                                   },
                                   child: const Text(
                                     'Forgot Password',

@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "773510038696",
+    "project_id": "droame-2f925",
+    "storage_bucket": "droame-2f925.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:773510038696:android:2845d0e3e55506f268ee9d",
+        "android_client_info": {
+          "package_name": "com.example.droame"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "773510038696-1nu2deb1o4qvi3fnc1fa2t9gn7f7hkv7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.droame",
+            "certificate_hash": "a1abf47ec32ec5b663152b2602a78061b23910dc"
+          }
+        },
+        {
+          "client_id": "773510038696-sdvtbivv1oqpsdjnc58lg16kf9nor8cc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBauNpioIGX0q4qEUlyFISLUzoxS6EzGfg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "773510038696-sdvtbivv1oqpsdjnc58lg16kf9nor8cc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "773510038696-ktipugefsggtgbqaudd61hoo59rs7gn6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.droame"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

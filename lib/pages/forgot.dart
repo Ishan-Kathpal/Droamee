@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class Forgot extends StatefulWidget {
@@ -7,6 +9,7 @@ class Forgot extends StatefulWidget {
 }
 
 class _ForgotFormState extends State<Forgot> {
+  String email = "";
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -50,12 +53,19 @@ class _ForgotFormState extends State<Forgot> {
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 )),
+                            onChanged: (value) => email = value,
                           ),
                           const SizedBox(
                             height: 30,
                           ),
                           ElevatedButton(
-                              onPressed: () => {},
+                              onPressed: () => {
+                                    FirebaseAuth.instanceFor(
+                                            app: Firebase.app("my app"))
+                                        .sendPasswordResetEmail(email: email)
+                                        .then((value) =>
+                                            Navigator.of(context).pop())
+                                  },
                               style: ButtonStyle(
                                   minimumSize: MaterialStateProperty.all(
                                       const Size(400, 50)),
@@ -73,19 +83,19 @@ class _ForgotFormState extends State<Forgot> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               TextButton(
-                                  onPressed: () {
-                                    Navigator.pushNamed(context, '/login');
-                                  },
-                                  style: const ButtonStyle(),
-                                  child: const Text(
-                                      'Sign in',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          decoration: TextDecoration.underline,
-                                          color: Color(0xff4c505b),
-                                          fontSize: 18),
-                                    ),
-                                  ),
+                                onPressed: () {
+                                  Navigator.pushNamed(context, '/login');
+                                },
+                                style: const ButtonStyle(),
+                                child: const Text(
+                                  'Sign in',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      decoration: TextDecoration.underline,
+                                      color: Color(0xff4c505b),
+                                      fontSize: 18),
+                                ),
+                              ),
                             ],
                           )
                         ],

@@ -1,4 +1,7 @@
+import 'package:droame/pages/home.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_phone_auth_handler/firebase_phone_auth_handler.dart';
 
 class Phone extends StatefulWidget {
   const Phone({Key? key}) : super(key: key);
@@ -7,9 +10,12 @@ class Phone extends StatefulWidget {
 }
 
 class _PhoneFormState extends State<Phone> {
+  String phone = "";
+  final _codeController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return FirebasePhoneAuthProvider(
+        child: Container(
       decoration: const BoxDecoration(
         image: DecorationImage(
             image: AssetImage('assets/illustrations/login.jpg'),
@@ -50,12 +56,110 @@ class _PhoneFormState extends State<Phone> {
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 )),
+                            onChanged: (value) => phone = value,
                           ),
                           const SizedBox(
                             height: 30,
                           ),
                           ElevatedButton(
-                              onPressed: () => {},
+                              onPressed: () => {
+                                    FirebaseAuth.instanceFor(
+                                            app: Firebase.app("my app"))
+                                        .verifyPhoneNumber(
+                                            phoneNumber: phone,
+                                            timeout: Duration(seconds: 60),
+                                            verificationCompleted:
+                                                (AuthCredential
+                                                    credential) async {
+                                              Navigator.of(context).pop();
+
+                                              final result = await FirebaseAuth
+                                                      .instanceFor(
+                                                          app: Firebase.app(
+                                                              "my app"))
+                                                  .signInWithCredential(
+                                                      credential);
+
+                                              User? user = result.user;
+
+                                              if (user != null) {
+                                                // ignore: use_build_context_synchronously
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            const Home()));
+                                              } else {
+                                                print("Error");
+                                              }
+
+                                              //This callback would gets called when verification is done auto maticlly
+                                            },
+                                            verificationFailed:
+                                                (FirebaseAuthException
+                                                    exception) {
+                                              print(exception);
+                                            },
+                                            codeSent: (verificationId,
+                                                forceResendingToken) {
+                                              showDialog(
+                                                  context: context,
+                                                  barrierDismissible: false,
+                                                  builder: (context) {
+                                                    return AlertDialog(
+                                                      title: Text("OTP"),
+                                                      content: Column(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: <Widget>[
+                                                          TextField(
+                                                            controller: _codeController,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      actions: <Widget>[
+                                                        ElevatedButton(
+                                                          onPressed: () async {
+                                                            final code = _codeController.text.trim();
+                                                            AuthCredential
+                                                                credential =
+                                                                PhoneAuthProvider
+                                                                    .credential(
+                                                                        verificationId:
+                                                                            verificationId,
+                                                                        smsCode:
+                                                                            code);
+                                                            final result = await FirebaseAuth
+                                                                    .instanceFor(
+                                                                        app: Firebase.app(
+                                                                            "my app"))
+                                                                .signInWithCredential(
+                                                                    credential);
+                                                            User? user =
+                                                                result.user;
+
+                                                            if (user != null) {
+                                                              // ignore: use_build_context_synchronously
+                                                              Navigator.push(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                      builder:
+                                                                          (context) =>
+                                                                              const Home()));
+                                                            } else {
+                                                              print("Error");
+                                                            }
+                                                          },
+                                                          child: const Text(
+                                                              "Confirm"),
+                                                        )
+                                                      ],
+                                                    );
+                                                  });
+                                            },
+                                            codeAutoRetrievalTimeout: (verificationId) => {}
+                                        )
+                                  },
                               style: ButtonStyle(
                                   minimumSize: MaterialStateProperty.all(
                                       const Size(400, 50)),
@@ -110,6 +214,6 @@ class _PhoneFormState extends State<Phone> {
           ],
         ),
       ),
-    );
+    ));
   }
 }

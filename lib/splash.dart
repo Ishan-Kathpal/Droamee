@@ -1,5 +1,4 @@
-import 'package:droame/pages/home.dart';
-import 'package:droame/pages/login.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -35,7 +34,14 @@ class _SplashScreenState extends State<Splash> with TickerProviderStateMixin {
             animate: true, onLoaded: (composition) {
       _controller
         ..duration = composition.duration
-        ..forward().whenComplete(() => Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => const Login())));
+        ..forward().whenComplete(
+            () => FirebaseAuth.instanceFor(app: Firebase.app("my app")).authStateChanges().listen((User? user) {
+                  if (user == null) {
+                    Navigator.pushNamed(context, '/login');
+                  } else {
+                    Navigator.pushNamed(context, '/home');
+                  }
+                }));
     }));
   }
 }
